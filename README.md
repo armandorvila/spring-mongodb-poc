@@ -2,40 +2,64 @@
 
 PoC that loads data into MongoDB via a Spring Batch job, and allows several queries on this data.
 
-## Load price data in batches
+## Build and Run
 
-This section explains how to load price data via offline processes configured to upload chunks of 10K records.
+The source code is structured as a Maven multi project with the following modules:
 
-### Starting the loadPrices job:
+- price-batch-service: Spring Batch service that offers a REST interface to lunch, cancel and query jobs that load data in the Mongo DB database.
+- price-service: Spring Webflux REST API that offers endpoints to query prices and batch runs.
 
-```bash
-curl -H "Accept: application/json" -X POST http://localhost:8080/batch/operations/jobs/loadPrices -d "jobParameters=dataFile=sample-data-2.csv"
-```
-
-### Retrieving the ids of JobExecutions running on this server:
+To build and run the entire project you can run the following commands:
 
 ```bash
-curl -H "Accept: application/json" http://localhost:8080/batch/monitoring/jobs/runningexecutions
+$ git clone https://github.com/armandorvila/spring-mongodb-poc
+$ cd spring-mongodb-poc
+$ mvn clean install
+$ docker-compose up --build
 ```
 
-### Retrieving the JobExecution:
+That will generate one JAR file for each service, it will build two fresh docker images for each one of them, and will run those two docker images along with a mongodb db.
+
+Once the docker compose is up, you can consume the endpoints explained in the next section:
+
+## Endpoints
+
+The following table sums up the system endpoints, full examples based on curl can be found in the next section:
+
+| Endpoint                                          | Method | Description                                                                                                                                                      |
+| ------------------------------------------------- | ------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `/batch/operations/jobs/loadPrices`               | POST   | Creates an asynchronous job execution for the loadPrices Spring Batch Job. Each will lunch a new execution, in background returning the execution id of the job. |
+| `/batch/monitoring/jobs/runningexecutions`        | GET    | Retrieves the list of job executions currently running.                                                                                                          |
+| `/batch/monitoring/jobs/executions/{executionId}` | GET    | Retrieves the information for a given execution ID.                                                                                                              |
+| `/batch/operations/jobs/executions/{executionId}` | DELETE | Stops a running execution.                                                                                                                                       |
+| `/prices`                                         | GET    | Retrieves all the transactions of an account, it implements offset/size pagination                                                                               |
+
+## Examples
+
+**Starting a Job**:
 
 ```bash
-curl -H "Accept: application/json" http://localhost:8080/batch/monitoring/jobs/executions/{executionId}
+$ curl -H "Accept: application/json" -X POST http://localhost:8080/batch/operations/jobs/loadPrices -d "jobParameters=dataFile=sample-data-2.csv"
 ```
 
-### Retrieving the JobExecution's ExitCode:
+**Listing the job execution ids currently running**:
 
 ```bash
-curl -H "Accept: application/json" http://localhost:8080/batch/operations/jobs/executions/{executionId}
+$ curl -H "Accept: application/json" http://localhost:8080/batch/monitoring/jobs/runningexecutions
 ```
 
-### Stopping a JobExecution:
+**Retrieving a JobExecution**:
 
 ```bash
-curl -H "Accept: application/json" -X DELETE http://localhost:8080/batch/operations/jobs/executions/{executionId}
+$ curl -H "Accept: application/json" http://localhost:8080/batch/monitoring/jobs/executions/{executionId}
 ```
 
-### Build
+**Stopping a JobExecution**:
+
+```bash
+$ curl -H "Accept: application/json" -X DELETE http://localhost:8080/batch/operations/jobs/executions/{executionId}
+```
+
+## Build
 
 [![Build Status](https://secure.travis-ci.org/armandorvila/spring-mongodb-poc.png)](http://travis-ci.org/armandorvila/spring-mongodb-poc) [![codecov.io](https://codecov.io/github/armandorvila/spring-mongodb-poc/coverage.svg)](https://codecov.io/github/armandorvila/spring-mongodb-poc) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/62c434b415f444e48bbed29f83b57a1f)](https://www.codacy.com/app/armandorvila/spring-mongodb-poc?utm_source=github.com&utm_medium=referral&utm_content=armandorvila/spring-mongodb-poc&utm_campaign=Badge_Grade)
