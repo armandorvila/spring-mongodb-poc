@@ -32,7 +32,9 @@ The following table sums up the system endpoints, full examples based on curl ca
 | `/batch/monitoring/jobs/runningexecutions`        | GET    | Retrieves the list of job executions currently running.                                                                                                          |
 | `/batch/monitoring/jobs/executions/{executionId}` | GET    | Retrieves the information for a given execution ID.                                                                                                              |
 | `/batch/operations/jobs/executions/{executionId}` | DELETE | Stops a running execution.                                                                                                                                       |
-| `/prices`                                         | GET    | Retrieves all the transactions of an account, it implements offset/size pagination                                                                               |
+| `/prices`                                         | GET    | Retrieves all the prices in the DB enforcing offset/size pagination.                                                                                             |
+| `/batches`                                        | GET    | Retrieves all the batch runs in the DB enforcing offset/size pagination.                                                                                         |
+| `/prices/last?instrumentId={instrumentId}`        | GET    | Get the last price for the givenInstrumentId, if no instrumentId is provided a 400 error is returned. If the instrumentId doesn't exist a 404 error is returned. |
 
 ## Examples
 
@@ -58,6 +60,24 @@ $ curl -H "Accept: application/json" http://localhost:8080/batch/monitoring/jobs
 
 ```bash
 $ curl -H "Accept: application/json" -X DELETE http://localhost:8080/batch/operations/jobs/executions/{executionId}
+```
+
+**Listing prices (default offset:0, default limit 100)**:
+
+```bash
+$ curl -H "Accept: application/json" http://localhost:8000/api/prices
+```
+
+**Listing batch-runs**:
+
+```bash
+$ curl -H "Accept: application/json" http://localhost:8000/api/batches
+```
+
+**Getting the last price for an instrument ID**:
+
+```bash
+$ curl -H "Accept: application/json" http://localhost:8000/api/prices/last?instrumentId=7f35ef04-4a7b-4934-9523-25a78def8cf1
 ```
 
 ## Build
