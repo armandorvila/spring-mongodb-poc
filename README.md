@@ -32,7 +32,7 @@ The following table sums up the system endpoints, full examples based on curl ca
 | `/batch/monitoring/jobs/runningexecutions`        | GET    | Retrieves the list of job executions currently running.                                                                                                          |
 | `/batch/monitoring/jobs/executions/{executionId}` | GET    | Retrieves the information for a given execution ID.                                                                                                              |
 | `/batch/operations/jobs/executions/{executionId}` | DELETE | Stops a running execution.                                                                                                                                       |
-| `/prices`                                         | GET    | Retrieves all the prices in the DB enforcing offset/size pagination.                                                                                             |
+| `/prices?instrumentId={instrumentId}`             | GET    | Retrieves all the prices in the DB by instrumentId, enforcing offset/size pagination.                                                                            |
 | `/batches`                                        | GET    | Retrieves all the batch runs in the DB enforcing offset/size pagination.                                                                                         |
 | `/prices/last?instrumentId={instrumentId}`        | GET    | Get the last price for the givenInstrumentId, if no instrumentId is provided a 400 error is returned. If the instrumentId doesn't exist a 404 error is returned. |
 

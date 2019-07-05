@@ -36,10 +36,4 @@ public class Price {
 	@NotNull(message = "The asOf field is required")
 	@JsonFormat(shape = JsonFormat.Shape.STRING)
 	private LocalDateTime asOf;
-
-	public Price(String payload, String instrumentId, LocalDateTime asOf) {
-		this.payload = payload;
-		this.instrumentId = instrumentId;
-		this.asOf = asOf;
-	}
 }
