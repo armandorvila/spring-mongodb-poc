@@ -1,0 +1,27 @@
+server:
+  port: 8080
+
+management:
+  endpoints:
+    enabled-by-default: true
+    web:
+      exposure:
+        include: '*'
+
+spring:
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/prices
+      
+
+  batch:
+    job:
+      enabled: false
+      
+      
+  main:
+    allow-bean-definition-overriding: true
+    
+batch:
+  config:
+    package-javaconfig: com.armandorvila.poc.price.config
