@@ -2,6 +2,7 @@ sudo: false
 
 services:
   - docker
+  - mongodb
 
 language: java
 

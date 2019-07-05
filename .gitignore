@@ -25,3 +25,4 @@ buildNumber.properties
 target
 .factorypath
 .springBeans
+.DS_Store
