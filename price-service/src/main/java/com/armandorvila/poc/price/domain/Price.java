@@ -32,6 +32,9 @@ public class Price {
 
 	@NotEmpty(message = "The payload field is required")
 	private String instrumentId;
+	
+	@NotEmpty(message = "The batchId field is required")
+	private String batchId;
 
 	@NotNull(message = "The asOf field is required")
 	@JsonFormat(shape = JsonFormat.Shape.STRING)

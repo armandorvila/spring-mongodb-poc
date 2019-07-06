@@ -12,7 +12,7 @@ import reactor.core.publisher.Mono;
 @Repository
 public interface PriceRepository extends ReactiveMongoRepository<Price, String> {
 
-    Flux<Price> findByInstrumentId(String instrumentId, Pageable page);
+	Flux<Price> findByInstrumentIdAndBatchIdNotIn(String instrumentId, Flux<String> batchIds, Pageable page);
 
-	Mono<Price> findTopByInstrumentIdOrderByAsOfDesc(String instrumentId);
+	Mono<Price> findTopByInstrumentIdAndBatchIdNotInOrderByAsOfDesc(String instrumentId, Flux<String> batchIds);
 }

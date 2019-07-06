@@ -30,7 +30,7 @@ import com.mongodb.client.MongoCollection;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class ApplicationTests {
+public class SpringBatchTests {
 
 	private static final String JOB_NAME = "loadPrices";
 
