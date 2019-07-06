@@ -44,7 +44,8 @@ batch:
     
 application:
   data-directory: /Users/armandorvila/work/spring-mongodb-poc/price-dataset
-  mongo:
+  commitInterval: 10000
+  mongodb:
     collection: prices
   
   

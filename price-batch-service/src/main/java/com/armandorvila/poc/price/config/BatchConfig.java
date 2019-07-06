@@ -76,7 +76,7 @@ public class BatchConfig {
 
 	@Bean
 	public Step loadRecordsStep(FlatFileItemReader<Price> reader, PriceItemProcessor processor, TaskExecutor taskExecutor) {
-		return stepBuilderFactory.get(JOB_NAME).<Price, Price>chunk(10000)
+		return stepBuilderFactory.get(JOB_NAME).<Price, Price>chunk(config.getCommitInterval())
 				.reader(reader)
 				.processor(processor)
 				.writer(writer())
@@ -108,7 +108,7 @@ public class BatchConfig {
 	public MongoItemWriter<Price> writer() {
 		MongoItemWriter<Price> writer = new MongoItemWriter<Price>();
 		writer.setTemplate(mongoTemplate);
-		writer.setCollection(config.getMongo().getCollection());
+		writer.setCollection(config.getMongodb().getCollection());
 		return writer;
 	}
 

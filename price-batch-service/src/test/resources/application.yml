@@ -29,7 +29,7 @@ batch:
     
 application:
   data-directory: src/test/resources
-  mongo:
+  mongodb:
     collection: prices
   
   

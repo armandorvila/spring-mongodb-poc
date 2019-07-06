@@ -9,10 +9,13 @@ import lombok.Data;
 public class ApplicationConfig {
 	
 	private String dataDirectory;
-	private Mongo mongo = new Mongo();
+	
+	private Integer commitInterval;
+	
+	private MongoDB mongodb = new MongoDB();
 
 	@Data
-	public static class Mongo {
+	public static class MongoDB {
 		private String collection;
 	}
 }
