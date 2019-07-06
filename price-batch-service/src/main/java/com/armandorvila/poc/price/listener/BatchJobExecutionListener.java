@@ -20,6 +20,7 @@ public class BatchJobExecutionListener implements JobExecutionListener {
 
 	@Override
 	public void beforeJob(JobExecution jobExecution) {
+
 		String dataFile = jobExecution.getJobParameters().getString("dataFile");
 
 		Batch batch = new Batch();
@@ -29,7 +30,7 @@ public class BatchJobExecutionListener implements JobExecutionListener {
 
 		batch = batchRepository.save(batch);
 
-		jobExecution.getExecutionContext().putString(Batch.class.getSimpleName(), batch.getId());
+		jobExecution.getExecutionContext().putString(Batch.class.getName(), batch.getId());
 
 	}
 
@@ -37,14 +38,14 @@ public class BatchJobExecutionListener implements JobExecutionListener {
 	public void afterJob(JobExecution jobExecution) {
 
 		if (jobExecution.getStatus() == BatchStatus.COMPLETED) {
-			String batchId = jobExecution.getExecutionContext().getString(Batch.class.getSimpleName());
+			String batchId = jobExecution.getExecutionContext().getString(Batch.class.getName());
 
 			Optional<Batch> batch = batchRepository.findById(batchId);
+			
+			batch.get().setState(BatchState.COMPLETED);
+			
+			batchRepository.save(batch.get());
 
-			if (batch.isPresent()) {
-				batch.get().setState(BatchState.COMPLETED);
-				batchRepository.save(batch.get());
-			}
 		}
 
 	}

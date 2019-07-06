@@ -27,7 +27,7 @@ public class Price {
 	
 	private String instrumentId;
 	
-	private String batchRunId;
+	private String batchId;
 	
 	@JsonFormat(shape = JsonFormat.Shape.STRING)
 	private LocalDateTime asOf;

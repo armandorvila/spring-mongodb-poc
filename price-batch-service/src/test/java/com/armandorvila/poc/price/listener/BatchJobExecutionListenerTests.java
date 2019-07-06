@@ -27,51 +27,51 @@ public class BatchJobExecutionListenerTests {
 
 	private JobExecution jobExecution;
 
-	private Batch testBatch;
+	private Batch batch;
 
 	@Before
 	public void setUp() {
 		batchRepository = mock(BatchRepository.class);
 		jobExecutionListener = new BatchJobExecutionListener(batchRepository);
 
-		testBatch = new Batch("1234", "dataFile=mydata.csv", BatchState.IN_PROGRESS, null, null);
-		jobExecution = MetaDataInstanceFactory.createJobExecution("loadPrices", 1L, 1L, testBatch.getDataFile());
+		batch = new Batch("1234", "dataFile=mydata.csv", BatchState.IN_PROGRESS, null, null);
+		jobExecution = MetaDataInstanceFactory.createJobExecution("loadPrices", 1L, 1L, batch.getDataFile());
 	}
 
 	@Test
 	public void should_CreateBatch_Before_JobExecution() {
-		given(batchRepository.save(any(Batch.class))).willReturn(testBatch);
+		given(batchRepository.save(any(Batch.class))).willReturn(batch);
 
 		jobExecutionListener.beforeJob(jobExecution);
 
 		then(batchRepository).should(times(1)).save(any(Batch.class));
 
-		assertThat(jobExecution.getExecutionContext().get(Batch.class.getSimpleName())).isEqualTo(testBatch.getId());
+		assertThat(jobExecution.getExecutionContext().get(Batch.class.getName())).isEqualTo(batch.getId());
 	}
 	
 	@Test
 	public void should_UpdateBatch_When_JobExecutionCompleted() {
-		jobExecution.getExecutionContext().putString(Batch.class.getSimpleName(), testBatch.getId());
+		jobExecution.getExecutionContext().putString(Batch.class.getName(), batch.getId());
 		jobExecution.setStatus(BatchStatus.COMPLETED);
 		
-		given(batchRepository.findById(testBatch.getId())).willReturn(Optional.of(testBatch));
-		given(batchRepository.save(any(Batch.class))).willReturn(testBatch);
+		given(batchRepository.findById(batch.getId())).willReturn(Optional.of(batch));
+		given(batchRepository.save(any(Batch.class))).willReturn(batch);
 		
 
 		jobExecutionListener.afterJob(jobExecution);
 
-		then(batchRepository).should(times(1)).findById(testBatch.getId());
+		then(batchRepository).should(times(1)).findById(batch.getId());
 		then(batchRepository).should(times(1)).save(any(Batch.class));
 	}
 	
 	@Test
 	public void should_NotUpdateBatch_When_JobExecutionNotCompleted() {
-		jobExecution.getExecutionContext().putString(Batch.class.getSimpleName(), testBatch.getId());
+		jobExecution.getExecutionContext().putString(Batch.class.getName(), batch.getId());
 		jobExecution.setStatus(BatchStatus.FAILED);
 
 		jobExecutionListener.afterJob(jobExecution);
 
-		then(batchRepository).should(times(0)).findById(testBatch.getId());
+		then(batchRepository).should(times(0)).findById(batch.getId());
 		then(batchRepository).should(times(0)).save(any(Batch.class));
 	}
 }

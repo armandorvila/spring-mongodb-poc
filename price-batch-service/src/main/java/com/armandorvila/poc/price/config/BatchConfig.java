@@ -26,6 +26,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import com.armandorvila.poc.price.domain.Price;
 import com.armandorvila.poc.price.listener.BatchJobExecutionListener;
 import com.armandorvila.poc.price.mapper.PriceMapper;
+import com.armandorvila.poc.price.processor.PriceItemProcessor;
 import com.armandorvila.poc.price.repository.BatchRepository;
 
 @EnableBatchProcessing
@@ -69,16 +70,14 @@ public class BatchConfig {
 	}
 
 	@Bean
-	public Step loadRecordsStep(FlatFileItemReader<Price> reader) {
-		return stepBuilderFactory.get(JOB_NAME).<Price, Price>chunk(10000).reader(reader).writer(writer()).build();
+	public Step loadRecordsStep(FlatFileItemReader<Price> reader, PriceItemProcessor processor) {
+		return stepBuilderFactory.get(JOB_NAME).<Price, Price>chunk(10000).reader(reader).processor(processor).writer(writer()).build();
 	}
-
+	
 	@Bean
-	public MongoItemWriter<Price> writer() {
-		MongoItemWriter<Price> writer = new MongoItemWriter<Price>();
-		writer.setTemplate(mongoTemplate);
-		writer.setCollection(config.getMongo().getCollection());
-		return writer;
+	@StepScope
+	public PriceItemProcessor processor() {
+		return new PriceItemProcessor();
 	}
 
 	@Bean
@@ -94,6 +93,15 @@ public class BatchConfig {
 
 		return reader;
 	}
+	
+	@Bean
+	public MongoItemWriter<Price> writer() {
+		MongoItemWriter<Price> writer = new MongoItemWriter<Price>();
+		writer.setTemplate(mongoTemplate);
+		writer.setCollection(config.getMongo().getCollection());
+		return writer;
+	}
+
 
 	private DefaultLineMapper<Price> lineMapper() {
 		DefaultLineMapper<Price> lineMapper = new DefaultLineMapper<Price>();

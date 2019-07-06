@@ -2,6 +2,7 @@ package com.armandorvila.poc.price;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import org.bson.Document;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,9 +21,12 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import com.armandorvila.poc.price.domain.Batch;
 import com.armandorvila.poc.price.domain.BatchState;
 import com.armandorvila.poc.price.listener.BatchJobExecutionListener;
+import com.armandorvila.poc.price.processor.PriceItemProcessor;
 import com.armandorvila.poc.price.repository.BatchRepository;
+import com.mongodb.client.MongoCollection;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -55,6 +59,7 @@ public class ApplicationTests {
 	public void shouldHave_SpringBatchBeans_When_ProperlyConfigured() {
 		assertThat(ctx.getBean(Job.class)).isNotNull();
 		assertThat(ctx.getBean(Step.class)).isNotNull();
+		assertThat(ctx.getBean(PriceItemProcessor.class)).isNotNull();
 		assertThat(ctx.getBean(FlatFileItemReader.class)).isNotNull();
 		assertThat(ctx.getBean(MongoItemWriter.class)).isNotNull();
 		assertThat(ctx.getBean(MongoTemplate.class)).isNotNull();
@@ -72,9 +77,15 @@ public class ApplicationTests {
 
 		assertThat(jobExplorer.getJobExecution(executionId).getStatus()).isEqualTo(BatchStatus.COMPLETED);
 
-		assertThat(batchRepository.findAll().get(0).getState()).isEqualTo(BatchState.COMPLETED);
-		assertThat(batchRepository.findAll().get(0).getDataFile()).isEqualTo("sample-data-small.csv");
-		assertThat(mongoTemplate.getCollection("prices").countDocuments()).isEqualTo(20434);
+		Batch batch = batchRepository.findAll().get(0);
+		
+		assertThat(batch.getState()).isEqualTo(BatchState.COMPLETED);
+		assertThat(batch.getDataFile()).isEqualTo("sample-data-small.csv");
+		
+		MongoCollection<Document> prices = mongoTemplate.getCollection("prices");
+		
+		assertThat(prices.countDocuments()).isEqualTo(20434);
+		assertThat(prices.find().first().getString("batchId")).isEqualTo(batch.getId());
 	}
 
 	@Test
