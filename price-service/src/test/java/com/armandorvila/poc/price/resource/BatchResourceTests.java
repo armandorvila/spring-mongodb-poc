@@ -45,7 +45,7 @@ public class BatchResourceTests {
 	}
 	
 	@Test
-	public void should_BatchesPage_When_Call_GetBatches() {
+	public void should_GetBatchesPage_When_Call_GetBatches() {
 		
 		webClient.get().uri("/api/batches")
 					.accept(APPLICATION_JSON)
@@ -54,6 +54,42 @@ public class BatchResourceTests {
 					.expectHeader().contentType(APPLICATION_JSON_UTF8)
 					.expectBodyList(Batch.class)
 					.hasSize(2);
+	}
+	
+	@Test
+	public void should_GetOneElementPage_When_OffsetZero_And_LimitOne() {
+		
+		webClient.get().uri("/api/batches?offset={offset}&limit={limit}", 0, 1)
+					.accept(APPLICATION_JSON)
+					.exchange()
+					.expectStatus().isOk()
+					.expectHeader().contentType(APPLICATION_JSON_UTF8)
+					.expectBodyList(Batch.class)
+					.hasSize(1);
+	}
+	
+	@Test
+	public void should_GetTwoElementsPage_When_OffsetZero_And_LimitTwo() {
+		
+		webClient.get().uri("/api/batches?offset={offset}&limit={limit}", 0, 2)
+					.accept(APPLICATION_JSON)
+					.exchange()
+					.expectStatus().isOk()
+					.expectHeader().contentType(APPLICATION_JSON_UTF8)
+					.expectBodyList(Batch.class)
+					.hasSize(2);
+	}
+	
+	@Test
+	public void should_OneElementPage_When_OffsetOne_And_LimitOne() {
+		
+		webClient.get().uri("/api/batches?offset={offset}&limit={limit}", 1, 1)
+					.accept(APPLICATION_JSON)
+					.exchange()
+					.expectStatus().isOk()
+					.expectHeader().contentType(APPLICATION_JSON_UTF8)
+					.expectBodyList(Batch.class)
+					.hasSize(1);
 	}
 
 

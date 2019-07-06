@@ -83,15 +83,39 @@ public class PriceResourceTests {
 	}
 	
 	@Test
-	public void should_PricesPage_When_Call_GetPrices() {
+	public void should_GetOneElementPage_When_OffsetZero_And_LimitOne() {
 		
-		webClient.get().uri("/api/prices?instrumentId={instrumentId}", INSTRUMENT_ID)
+		webClient.get().uri("/api/prices?instrumentId={instrumentId}&offset={offset}&limit={limit}", INSTRUMENT_ID, 0, 1)
+					.accept(APPLICATION_JSON)
+					.exchange()
+					.expectStatus().isOk()
+					.expectHeader().contentType(APPLICATION_JSON_UTF8)
+					.expectBodyList(Price.class)
+					.hasSize(1);
+	}
+	
+	@Test
+	public void should_GetTwoElementsPage_When_OffsetZero_And_LimitTwo() {
+		
+		webClient.get().uri("/api/prices?instrumentId={instrumentId}&offset={offset}&limit={limit}", INSTRUMENT_ID, 0, 2)
 					.accept(APPLICATION_JSON)
 					.exchange()
 					.expectStatus().isOk()
 					.expectHeader().contentType(APPLICATION_JSON_UTF8)
 					.expectBodyList(Price.class)
 					.hasSize(2);
+	}
+	
+	@Test
+	public void should_OneElementPage_When_OffsetOne_And_LimitOne() {
+		
+		webClient.get().uri("/api/prices?instrumentId={instrumentId}&offset={offset}&limit={limit}", INSTRUMENT_ID, 1, 1)
+					.accept(APPLICATION_JSON)
+					.exchange()
+					.expectStatus().isOk()
+					.expectHeader().contentType(APPLICATION_JSON_UTF8)
+					.expectBodyList(Price.class)
+					.hasSize(1);
 	}
 }
 
