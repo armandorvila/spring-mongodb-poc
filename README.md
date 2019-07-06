@@ -117,8 +117,6 @@ curl -H "Accept: application/json" http://localhost:9000/api/prices/last?instrum
 
 Some times running all the components in a development laptop, are:
 
-- **Development laptop**: Less than 2 minutes per batch run and immediate responses from the REST service. After 10 batch runs, the indexing starts taking too long, and we see that the batch runs starts taking more and more, the REST service can see some degradation while the indexing is taking place, after that it comes back to be very fast.
-
-Running with docker-compose, the first batch runs takes 9 minutes vs 2 running on the host, this is mainly due to the configuration of the mongodb docker image.
+- **Development laptop**: Less than 2 minutes per batch run and immediate responses from the REST service. After 10 batch runs, the indexing starts taking too long, and we see that the batch runs starts taking more and more, the REST service can see some degradation while the indexing is taking place, after that it comes back to be very fast. Running with docker-compose, the first batch takes 9 minutes instead of 2, which I tend to think is due to the performance of the dockerize MongoDB vs my local one.
 
 - **Improvements**: To really test the scalability of the system, we should in first place separate the components and make sure they run on different nodes. The most important improvement that the system requires is to scale the MongoDB database, turning the single development node into a cluster several mongos and support for real sharding, so we can use the instrumentId as sharding ID. With more compute power, multiple instnaces of the batch service can be launched in parallel, to load multiple data files at the same time, and the cores used for each process can be adjusted to use more resources.
