@@ -17,7 +17,7 @@ PoC that loads data into MongoDB via a Spring Batch job, and allows several quer
 
 ## Architecture
 
-The system has been designed to decouple the consumer from the producer, so they can be scaled indepdently, putting most of the weight on a shared Mongodb database, that can and must be scaled independently to support bigger data sets.
+The system has been designed to decouple the consumers from the producers, so they can be scaled indepdently, putting most of the weight on a shared Mongodb database, that can and must be scaled independently to support bigger data sets.
 
 ![Architecture](./assets/SpringBatch_MongoDB_PoC.png)
 
