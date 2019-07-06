@@ -1,18 +1,18 @@
 package com.armandorvila.poc.price.config;
 
-import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import org.springframework.batch.core.Job;
+import org.springframework.batch.core.JobParametersValidator;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepScope;
+import org.springframework.batch.core.job.DefaultJobParametersValidator;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.item.data.MongoItemWriter;
 import org.springframework.batch.item.file.FlatFileItemReader;
-import org.springframework.batch.item.file.FlatFileParseException;
 import org.springframework.batch.item.file.mapping.DefaultLineMapper;
 import org.springframework.batch.item.file.transform.DelimitedLineTokenizer;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,18 +24,19 @@ import org.springframework.core.io.Resource;
 import org.springframework.data.mongodb.core.MongoTemplate;
 
 import com.armandorvila.poc.price.domain.Price;
-import com.armandorvila.poc.price.listener.BadRecordSkipListener;
-import com.armandorvila.poc.price.listener.LoadPricesJobExecutionListener;
+import com.armandorvila.poc.price.listener.BatchJobExecutionListener;
 import com.armandorvila.poc.price.mapper.PriceMapper;
-import com.armandorvila.poc.price.repository.BatchRunRepository;
+import com.armandorvila.poc.price.repository.BatchRepository;
 
 @EnableBatchProcessing
 @Configuration
 public class BatchConfig {
 
-	private static final String MONGO_COLLECTION = "prices";
+	private static final String DATA_FILE_KEY = "dataFile";
 
-	private static final String BASE_DATA_PATH = "/Users/armandorvila/work/ihs-assignment/data/";
+	private static final String[] FIELDS = new String[] { "id", "payload", "asOf" };
+
+	private static final String JOB_NAME = "loadPrices";
 
 	@Autowired
 	private JobBuilderFactory jobBuilderFactory;
@@ -46,24 +47,37 @@ public class BatchConfig {
 	@Autowired
 	private MongoTemplate mongoTemplate;
 
+	@Autowired
+	private ApplicationConfig config;
+
 	@Bean
-	public Job loadPrices(Step loadRecordsStep, LoadPricesJobExecutionListener listener) {
-		return jobBuilderFactory.get("loadPrices").incrementer(new RunIdIncrementer()).start(loadRecordsStep)
-				.listener(listener).build();
+	public BatchJobExecutionListener jobExecutionListener(BatchRepository repository) {
+		return new BatchJobExecutionListener(repository);
+	}
+
+	@Bean
+	public JobParametersValidator jobParametersValidator() {
+		DefaultJobParametersValidator validator = new DefaultJobParametersValidator();
+		validator.setRequiredKeys(new String[] { DATA_FILE_KEY });
+		return validator;
+	}
+
+	@Bean
+	public Job loadPrices(Step loadRecordsStep, BatchJobExecutionListener listener) {
+		return jobBuilderFactory.get(JOB_NAME).incrementer(new RunIdIncrementer()).validator(jobParametersValidator())
+				.start(loadRecordsStep).listener(listener).build();
 	}
 
 	@Bean
 	public Step loadRecordsStep(FlatFileItemReader<Price> reader) {
-		return stepBuilderFactory.get("loadRecords").<Price, Price>chunk(10000).reader(reader).faultTolerant()
-				.skipLimit(100).skip(FlatFileParseException.class).listener(new BadRecordSkipListener())
-				.writer(writer()).build();
+		return stepBuilderFactory.get(JOB_NAME).<Price, Price>chunk(10000).reader(reader).writer(writer()).build();
 	}
 
 	@Bean
 	public MongoItemWriter<Price> writer() {
 		MongoItemWriter<Price> writer = new MongoItemWriter<Price>();
 		writer.setTemplate(mongoTemplate);
-		writer.setCollection(MONGO_COLLECTION);
+		writer.setCollection(config.getMongo().getCollection());
 		return writer;
 	}
 
@@ -72,38 +86,27 @@ public class BatchConfig {
 	public FlatFileItemReader<Price> reader(@Value("#{jobParameters[dataFile]}") String dataFile) {
 		FlatFileItemReader<Price> reader = new FlatFileItemReader<>();
 
+		Resource resource = new FileSystemResource(Paths.get(config.getDataDirectory(), dataFile));
+
+		reader.setResource(resource);
 		reader.setLinesToSkip(1);
-		reader.setResource(fileResource(dataFile));
 		reader.setLineMapper(lineMapper());
 
 		return reader;
 	}
 
 	private DefaultLineMapper<Price> lineMapper() {
-		return new DefaultLineMapper<Price>() {
-			{
-				setLineTokenizer(lineTokenizer());
-				setFieldSetMapper(new PriceMapper());
-			}
-		};
+		DefaultLineMapper<Price> lineMapper = new DefaultLineMapper<Price>();
+
+		lineMapper.setFieldSetMapper(new PriceMapper());
+		lineMapper.setLineTokenizer(lineTokenizer());
+
+		return lineMapper;
 	}
 
 	private DelimitedLineTokenizer lineTokenizer() {
-		return new DelimitedLineTokenizer() {
-			{
-				setNames(new String[] { "id", "payload", "asOf" });
-				setStrict(false);
-			}
-		};
-	}
-
-	private Resource fileResource(String dataFile) {
-		final Path path = Paths.get(BASE_DATA_PATH, dataFile);
-		return new FileSystemResource(path);
-	}
-
-	@Bean
-	public LoadPricesJobExecutionListener loadPricesJobExecutionListener(BatchRunRepository repository) {
-		return new LoadPricesJobExecutionListener(repository);
+		DelimitedLineTokenizer tokenizer = new DelimitedLineTokenizer();
+		tokenizer.setNames(FIELDS);
+		return tokenizer;
 	}
 }

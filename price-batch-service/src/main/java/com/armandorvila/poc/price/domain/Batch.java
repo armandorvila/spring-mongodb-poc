@@ -18,15 +18,15 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(exclude = {"createdAt", "updatedAt"})
-@Document(collection = "batch_runs")
-public class BatchRun {
+@Document(collection = "batches")
+public class Batch {
 	
 	@Id
 	private String id;
 	
 	private String dataFile;
 	
-	private BatchRunState state;
+	private BatchState state;
 	
 	@CreatedDate
 	@JsonFormat(shape = JsonFormat.Shape.STRING)

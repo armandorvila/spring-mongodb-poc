@@ -11,7 +11,7 @@ management:
 spring:
   data:
     mongodb:
-      uri: mongodb://localhost:27017/prices
+      uri: mongodb://localhost:27017/prices_test
       
 
   batch:
@@ -28,7 +28,7 @@ batch:
     
     
 application:
-  data-directory: /Users/armandorvila/work/spring-mongo-poc/data/
+  data-directory: src/test/resources
   mongo:
     collection: prices
   

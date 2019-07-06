@@ -1,6 +1,6 @@
 package com.armandorvila.poc.price.domain;
 
-public enum BatchRunState {
+public enum BatchState {
 
 	COMPLETED, IN_PROGRESS
 }

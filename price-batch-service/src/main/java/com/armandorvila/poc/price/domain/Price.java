@@ -35,17 +35,4 @@ public class Price {
 	@CreatedDate
 	@JsonFormat(shape = JsonFormat.Shape.STRING)
 	private LocalDateTime createdAt;
-
-	public Price(String payload, String instrumentId, LocalDateTime asOf) {
-		this.payload = payload;
-		this.instrumentId = instrumentId;
-		this.asOf = asOf;
-	}
-	
-	public Price(String id, String payload, String instrumentId, LocalDateTime asOf) {
-		this.id = id;
-		this.payload = payload;
-		this.instrumentId = instrumentId;
-		this.asOf = asOf;
-	}
 }
