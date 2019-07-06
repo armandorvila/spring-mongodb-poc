@@ -26,52 +26,51 @@ Once the docker compose is up, you can consume the endpoints explained in the ne
 
 The following table sums up the system endpoints, full examples based on curl can be found in the next section:
 
-| Endpoint                                          | Method | Description                                                                                                                                                      |
-| ------------------------------------------------- | ------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `/batch/operations/jobs/loadPrices`               | POST   | Creates an asynchronous job execution for the loadPrices Spring Batch Job. Each will lunch a new execution, in background returning the execution id of the job. |
-| `/batch/monitoring/jobs/runningexecutions`        | GET    | Retrieves the list of job executions currently running.                                                                                                          |
-| `/batch/monitoring/jobs/executions/{executionId}` | GET    | Retrieves the information for a given execution ID.                                                                                                              |
-| `/batch/operations/jobs/executions/{executionId}` | DELETE | Stops a running execution.                                                                                                                                       |
-| `/prices?instrumentId={instrumentId}`             | GET    | Retrieves all the prices in the DB by instrumentId, enforcing offset/size pagination.                                                                            |
-| `/batches`                                        | GET    | Retrieves all the batch runs in the DB enforcing offset/size pagination.                                                                                         |
-| `/prices/last?instrumentId={instrumentId}`        | GET    | Get the last price for the givenInstrumentId, if no instrumentId is provided a 400 error is returned. If the instrumentId doesn't exist a 404 error is returned. |
+| Endpoint                                        | Method | Description                                                                                                                                                       |
+| ----------------------------------------------- | ------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `/api/operations/jobs/loadPrices`               | POST   | Creates an asynchronous job execution for the loadPrices Spring Batch Job. Each will lunch a new execution, in background returning the execution id of the job.  |
+| `/api/operations/jobs/executions/{executionId}` | DELETE | Stops the job execution of the given ID.                                                                                                                          |
+| `/api/monitoring/jobs/executions/{executionId}` | GET    | Retrieves the information for a given execution ID.                                                                                                               |
+| `/api/batches`                                  | GET    | Retrieves the batch runs from the database enforcing offset/size pagination.                                                                                      |
+| `/api/prices?instrumentId={instrumentId}`       | GET    | Retrieves all the prices from the database by instrumentId, enforcing offset/size pagination.                                                                     |
+| `/api/prices/last?instrumentId={instrumentId}`  | GET    | Get the last price for the given instrumentId, if no instrumentId is provided a 400 error is returned. If the instrumentId doesn't exist a 404 error is returned. |
 
 ## Examples
 
-**Starting a Job**:
+**Starting a Job Execution**:
 
 ```bash
-$ curl -H "Accept: application/json" -X POST http://localhost:8080/api/operations/jobs/loadPrices -d "jobParameters=dataFile=sample-data-2.csv"
+curl -H "Accept: application/json" -X POST http://localhost:8080/api/operations/jobs/loadPrices -d "jobParameters=dataFile=sample-data-2.csv"
 ```
 
-**Retrieving a JobExecution**:
+**Retrieving a Job Execution**:
 
 ```bash
-$ curl -H "Accept: application/json" http://localhost:8080/api/monitoring/jobs/executions/{executionId}
+curl -H "Accept: application/json" http://localhost:8080/api/monitoring/jobs/executions/{executionId}
 ```
 
-**Stopping a JobExecution**:
+**Stopping a Job Execution**:
 
 ```bash
-$ curl -H "Accept: application/json" -X DELETE http://localhost:8080/api/operations/jobs/executions/{executionId}
+curl -H "Accept: application/json" -X DELETE http://localhost:8080/api/operations/jobs/executions/{executionId}
+```
+
+**Listing the batch runs**:
+
+```bash
+curl -H "Accept: application/json" http://localhost:8000/api/batches
 ```
 
 **Listing prices (default offset:0, default limit 100)**:
 
 ```bash
-$ curl -H "Accept: application/json" http://localhost:8000/api/prices
-```
-
-**Listing batch-runs**:
-
-```bash
-$ curl -H "Accept: application/json" http://localhost:8000/api/batches
+curl -H "Accept: application/json" http://localhost:8000/api/prices?instrumentId=7f35ef04-4a7b-4934-9523-25a78def8cf1
 ```
 
 **Getting the last price for an instrument ID**:
 
 ```bash
-$ curl -H "Accept: application/json" http://localhost:8000/api/prices/last?instrumentId=7f35ef04-4a7b-4934-9523-25a78def8cf1
+curl -H "Accept: application/json" http://localhost:8000/api/prices/last?instrumentId=7f35ef04-4a7b-4934-9523-25a78def8cf1
 ```
 
 ## Build
