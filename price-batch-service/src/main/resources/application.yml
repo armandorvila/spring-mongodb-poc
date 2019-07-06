@@ -25,10 +25,15 @@ spring:
 batch:
   config:
     package-javaconfig: com.armandorvila.poc.price.config
+  web:
+    operations:
+      base: /api/operations
+    monitoring:
+      base: /api/monitoring
     
     
 application:
-  data-directory: /Users/armandorvila/work/spring-mongo-poc/data/
+  data-directory: /Users/armandorvila/work/spring-mongodb-poc/price-dataset
   mongo:
     collection: prices
   

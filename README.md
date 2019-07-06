@@ -41,25 +41,19 @@ The following table sums up the system endpoints, full examples based on curl ca
 **Starting a Job**:
 
 ```bash
-$ curl -H "Accept: application/json" -X POST http://localhost:8080/batch/operations/jobs/loadPrices -d "jobParameters=dataFile=sample-data-2.csv"
-```
-
-**Listing the job execution ids currently running**:
-
-```bash
-$ curl -H "Accept: application/json" http://localhost:8080/batch/monitoring/jobs/runningexecutions
+$ curl -H "Accept: application/json" -X POST http://localhost:8080/api/operations/jobs/loadPrices -d "jobParameters=dataFile=sample-data-2.csv"
 ```
 
 **Retrieving a JobExecution**:
 
 ```bash
-$ curl -H "Accept: application/json" http://localhost:8080/batch/monitoring/jobs/executions/{executionId}
+$ curl -H "Accept: application/json" http://localhost:8080/api/monitoring/jobs/executions/{executionId}
 ```
 
 **Stopping a JobExecution**:
 
 ```bash
-$ curl -H "Accept: application/json" -X DELETE http://localhost:8080/batch/operations/jobs/executions/{executionId}
+$ curl -H "Accept: application/json" -X DELETE http://localhost:8080/api/operations/jobs/executions/{executionId}
 ```
 
 **Listing prices (default offset:0, default limit 100)**:
