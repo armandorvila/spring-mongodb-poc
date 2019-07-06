@@ -29,6 +29,7 @@ batch:
     
 application:
   data-directory: src/test/resources
+  commit-interval: 10000
   mongodb:
     collection: prices
   
