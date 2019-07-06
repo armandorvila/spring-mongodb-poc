@@ -1,5 +1,7 @@
 # spring-mongodb-poc
 
+[![Build Status](https://secure.travis-ci.org/armandorvila/spring-mongodb-poc.png)](http://travis-ci.org/armandorvila/spring-mongodb-poc) [![codecov.io](https://codecov.io/github/armandorvila/spring-mongodb-poc/coverage.svg)](https://codecov.io/github/armandorvila/spring-mongodb-poc) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/a4d5023ae1fa4e09b5afd9d8ca2a4cde)](https://www.codacy.com/app/armandorvila/spring-mongodb-poc?utm_source=github.com&utm_medium=referral&utm_content=armandorvila/spring-mongodb-poc&utm_campaign=Badge_Grade)
+
 PoC that loads data into MongoDB via a Spring Batch job, and allows several queries on this data.
 
 ## Tech Stack
@@ -108,10 +110,6 @@ curl -H "Accept: application/json" http://localhost:9000/api/prices?instrumentId
 ```bash
 curl -H "Accept: application/json" http://localhost:9000/api/prices/last?instrumentId=7f35ef04-4a7b-4934-9523-25a78def8cf1
 ```
-
-## Build
-
-[![Build Status](https://secure.travis-ci.org/armandorvila/spring-mongodb-poc.png)](http://travis-ci.org/armandorvila/spring-mongodb-poc) [![codecov.io](https://codecov.io/github/armandorvila/spring-mongodb-poc/coverage.svg)](https://codecov.io/github/armandorvila/spring-mongodb-poc) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/a4d5023ae1fa4e09b5afd9d8ca2a4cde)](https://www.codacy.com/app/armandorvila/spring-mongodb-poc?utm_source=github.com&utm_medium=referral&utm_content=armandorvila/spring-mongodb-poc&utm_campaign=Badge_Grade)
 
 ## Performance and Scalability
 
