@@ -2,6 +2,6 @@ FROM openjdk:8-jdk-alpine
 
 LABEL author=armando.ramirez.vila@gmail.com
 
-COPY price-service/target/*.jar /app.jar
+COPY price-batch-service/target/*.jar /app.jar
 
 ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/app.jar"]
