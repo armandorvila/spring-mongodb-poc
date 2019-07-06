@@ -32,6 +32,8 @@ import com.mongodb.client.MongoCollection;
 @SpringBootTest
 public class SpringBatchTests {
 
+	private static final int TOTAL_TEST_RECORDS = 20434;
+
 	private static final String JOB_NAME = "loadPrices";
 
 	@Autowired
@@ -84,7 +86,7 @@ public class SpringBatchTests {
 		
 		MongoCollection<Document> prices = mongoTemplate.getCollection("prices");
 		
-		assertThat(prices.countDocuments()).isEqualTo(20434);
+		assertThat(prices.countDocuments()).isEqualTo(TOTAL_TEST_RECORDS);
 		assertThat(prices.find().first().getString("batchId")).isEqualTo(batch.getId());
 	}
 
@@ -113,7 +115,7 @@ public class SpringBatchTests {
 		assertThat(jobExplorer.getJobExecution(executionId).getStatus()).isEqualTo(BatchStatus.FAILED);
 
 		assertThat(batchRepository.findAll().get(0).getState()).isEqualTo(BatchState.IN_PROGRESS);
-		assertThat(mongoTemplate.getCollection("prices").countDocuments()).isEqualTo(0);
+		assertThat(mongoTemplate.getCollection("prices").countDocuments()).isLessThan(20434);
 	}
 
 	@Test(expected = JobParametersInvalidException.class)

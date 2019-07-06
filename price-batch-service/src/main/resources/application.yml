@@ -1,5 +1,5 @@
 server:
-  port: 8080
+  port: 9001
 
 management:
   endpoints:
@@ -7,6 +7,8 @@ management:
     web:
       exposure:
         include: '*'
+        
+        
 
 spring:
   data:
@@ -21,6 +23,14 @@ spring:
       
   main:
     allow-bean-definition-overriding: true
+  
+  task:
+    execution:
+      thread-name-prefix: "price_batch_service_thread"
+      pool:
+        core-size: 6
+        max-size: 10
+        queue-capacity: 1000
     
 batch:
   config:

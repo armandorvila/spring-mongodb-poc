@@ -21,6 +21,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
+import org.springframework.core.task.TaskExecutor;
 import org.springframework.data.mongodb.core.MongoTemplate;
 
 import com.armandorvila.poc.price.domain.Price;
@@ -65,13 +66,22 @@ public class BatchConfig {
 
 	@Bean
 	public Job loadPrices(Step loadRecordsStep, BatchJobExecutionListener listener) {
-		return jobBuilderFactory.get(JOB_NAME).incrementer(new RunIdIncrementer()).validator(jobParametersValidator())
-				.start(loadRecordsStep).listener(listener).build();
+		return jobBuilderFactory.get(JOB_NAME)
+				.incrementer(new RunIdIncrementer())
+				.validator(jobParametersValidator())
+				.start(loadRecordsStep)
+				.listener(listener)
+				.build();
 	}
 
 	@Bean
-	public Step loadRecordsStep(FlatFileItemReader<Price> reader, PriceItemProcessor processor) {
-		return stepBuilderFactory.get(JOB_NAME).<Price, Price>chunk(10000).reader(reader).processor(processor).writer(writer()).build();
+	public Step loadRecordsStep(FlatFileItemReader<Price> reader, PriceItemProcessor processor, TaskExecutor taskExecutor) {
+		return stepBuilderFactory.get(JOB_NAME).<Price, Price>chunk(10000)
+				.reader(reader)
+				.processor(processor)
+				.writer(writer())
+				.taskExecutor(taskExecutor)
+				.build();
 	}
 	
 	@Bean

@@ -20,7 +20,9 @@ $ docker-compose up --build
 
 That will generate one JAR file for each service, it will build two fresh docker images for each one of them, and will run those two docker images along with a mongodb db.
 
-Once the docker compose is up, you can consume the endpoints explained in the next section:
+Once the docker compose is up, you can consume the endpoints explained in the next section.
+
+**NOTE**: You must have the ports 9000 and 9001 available on the host computer, otherwise you must adjust the compose file.
 
 ## Endpoints
 
@@ -40,37 +42,37 @@ The following table sums up the system endpoints, full examples based on curl ca
 **Starting a Job Execution**:
 
 ```bash
-curl -H "Accept: application/json" -X POST http://localhost:8080/api/operations/jobs/loadPrices -d "jobParameters=dataFile=sample-data-2.csv"
+curl -H "Accept: application/json" -X POST http://localhost:9001/api/operations/jobs/loadPrices -d "jobParameters=dataFile=sample-data-2.csv"
 ```
 
 **Retrieving a Job Execution**:
 
 ```bash
-curl -H "Accept: application/json" http://localhost:8080/api/monitoring/jobs/executions/{executionId}
+curl -H "Accept: application/json" http://localhost:9001/api/monitoring/jobs/executions/{executionId}
 ```
 
 **Stopping a Job Execution**:
 
 ```bash
-curl -H "Accept: application/json" -X DELETE http://localhost:8080/api/operations/jobs/executions/{executionId}
+curl -H "Accept: application/json" -X DELETE http://localhost:9001/api/operations/jobs/executions/{executionId}
 ```
 
 **Listing the batch runs**:
 
 ```bash
-curl -H "Accept: application/json" http://localhost:8000/api/batches
+curl -H "Accept: application/json" http://localhost:9000/api/batches
 ```
 
 **Listing prices (default offset:0, default limit 100)**:
 
 ```bash
-curl -H "Accept: application/json" http://localhost:8000/api/prices?instrumentId=7f35ef04-4a7b-4934-9523-25a78def8cf1
+curl -H "Accept: application/json" http://localhost:9000/api/prices?instrumentId=7f35ef04-4a7b-4934-9523-25a78def8cf1
 ```
 
 **Getting the last price for an instrument ID**:
 
 ```bash
-curl -H "Accept: application/json" http://localhost:8000/api/prices/last?instrumentId=7f35ef04-4a7b-4934-9523-25a78def8cf1
+curl -H "Accept: application/json" http://localhost:9000/api/prices/last?instrumentId=7f35ef04-4a7b-4934-9523-25a78def8cf1
 ```
 
 ## Build

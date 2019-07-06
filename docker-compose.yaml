@@ -1,34 +1,38 @@
 version: '3'
 
-services:  
-
+services:
   database:
     container_name: database
     image: mongo:4.1.13
     ports:
-        - 27017:27017
-    command: mongod --logpath=/var/log/mongodb.log
-  
+      - 27017
+    command: mongod
+
   price-service:
     image: armandorvila/price-service
     build:
       context: .
       dockerfile: ./price-service/src/main/docker/Dockerfile
     ports:
-      - 8000
+      - 9000:9000
     environment:
-      SPRING_PROFILES_ACTIVE: prod
+      SERVER_PORT: 9000
+      SPRING_DATA_MONGODB_URI: mongodb://database:27017/prices
     depends_on:
       - database
-  
+
   price-batch-service:
     image: armandorvila/price-batch-service
     ports:
-      - 9000
+      - 9001:9001
     build:
       context: .
       dockerfile: ./price-batch-service/src/main/docker/Dockerfile
+    volumes:
+      - ./price-dataset:/var/price-dataset
     environment:
-      SPRING_PROFILES_ACTIVE: prod
+      SERVER_PORT: 9001
+      SPRING_DATA_MONGODB_URI: mongodb://database:27017/prices
+      APPLICATION_DATA_DIRECTORY: /var/price-dataset
     depends_on:
       - database
