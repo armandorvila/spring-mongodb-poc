@@ -51,6 +51,13 @@ Once the docker compose is up, you can consume the endpoints explained in the ne
 
 **NOTE**: You must have the ports 9000 and 9001 available on the host computer, otherwise you must adjust the compose file.
 
+As an alternative, if you have a Mongodb database locally installed, you can run the services directly on your laptop:
+
+```bash
+$ java -jar price-service/target/*.jar
+$ java -jar price-batch-service/target/*.jar
+```
+
 ## Endpoints
 
 The following table sums up the system endpoints, full examples based on curl can be found in the next section:
