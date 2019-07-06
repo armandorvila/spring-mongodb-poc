@@ -17,17 +17,13 @@ PoC that loads data into MongoDB via a Spring Batch job, and allows several quer
 
 ## Architecture
 
-The following diagram shows the architecture overview of the PoC:
+The system has been designed to decouple the consumer from the producer, so they can be scaled indepdently, putting most of the weight on a shared Mongodb database, that can and must be scaled independently to support bigger data sets.
 
 ![Architecture](./assets/SpringBatch_MongoDB_PoC.png)
 
 - **Spring Batch Service**: Spring Boot application implementing a Spring Batch Job that can be triggered
   via an HTTP interface, exposed by the batch-web-spring-boot-starter library craeted by Codecentric.
-  The producer can lunch several concurrent jobs via HTTP requests, indicating the file name belonging to one of the files stored in the dataset directroy.
-
-  The data files are processed in chunks of 10K, but this can be easly modified via an environment variable, once the job is finished, the state of the Batch run linked to all the price records processed for that Job will be updated as COMPLETED.
-
-  The data files must be in csv format, like the examples located in the [price-dataset](price-dataset) directory.
+  The producer can lunch several concurrent jobs via HTTP requests, indicating the file name belonging to one of the files stored in the dataset directroy. The data files are processed in chunks of 10K, but this can be easly modified via an environment variable, once the job is finished, the state of the Batch run linked to all the price records processed for that Job will be updated as COMPLETED. The data files must be in csv format, like the examples located in the [price-dataset](price-dataset) directory.
 
 - **Spring Rest Service**: This service implements endpoints to list the batch runs, prices and to query the last price of a given instrumentId.
 
