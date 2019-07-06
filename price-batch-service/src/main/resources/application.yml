@@ -28,8 +28,8 @@ spring:
     execution:
       thread-name-prefix: "price_batch_service_thread"
       pool:
-        core-size: 6
-        max-size: 10
+        core-size: 4
+        max-size: 6
         queue-capacity: 1000
     
 batch:
@@ -44,7 +44,7 @@ batch:
     
 application:
   data-directory: /Users/armandorvila/work/spring-mongodb-poc/price-dataset
-  commit-interval: 10000
+  commit-interval: 25000
   mongodb:
     collection: prices
   

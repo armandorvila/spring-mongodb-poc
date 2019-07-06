@@ -26,3 +26,5 @@ target
 .factorypath
 .springBeans
 .DS_Store
+
+price-mongodb-data/
