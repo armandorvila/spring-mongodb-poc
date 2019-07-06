@@ -35,7 +35,7 @@ public class BatchConfig {
 
 	private static final String DATA_FILE_KEY = "dataFile";
 
-	private static final String[] FIELDS = new String[] { "id", "payload", "asOf" };
+	private static final String[] FIELDS = new String[] { "instrumentId", "payload", "asOf" };
 
 	private static final String JOB_NAME = "loadPrices";
 

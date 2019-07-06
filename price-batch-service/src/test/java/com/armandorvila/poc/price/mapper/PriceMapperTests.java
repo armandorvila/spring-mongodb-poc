@@ -33,13 +33,13 @@ public class PriceMapperTests {
 	@Test
 	public void should_MapAllTheFields_When_GivenValidData() throws BindException {
 		
-		given(fieldSet.readRawString("id")).willReturn(INSTRUMENT_ID);
+		given(fieldSet.readRawString("instrumentId")).willReturn(INSTRUMENT_ID);
 		given(fieldSet.readRawString("payload")).willReturn(PAYLOAD);
 		given(fieldSet.readRawString("asOf")).willReturn(AS_OF);
 
 		Price price = mapper.mapFieldSet(fieldSet);
 		
-		then(fieldSet).should(times(1)).readRawString("id");
+		then(fieldSet).should(times(1)).readRawString("instrumentId");
 		then(fieldSet).should(times(1)).readRawString("payload");
 		then(fieldSet).should(times(1)).readRawString("asOf");
 
@@ -51,13 +51,13 @@ public class PriceMapperTests {
 	@Test(expected = DateTimeParseException.class)
 	public void should_ThrowDateTimeParseException_When_GivenInvalidDate() throws BindException {
 		
-		given(fieldSet.readRawString("id")).willReturn(INSTRUMENT_ID);
+		given(fieldSet.readRawString("instrumentId")).willReturn(INSTRUMENT_ID);
 		given(fieldSet.readRawString("payload")).willReturn(PAYLOAD);
 		given(fieldSet.readRawString("asOf")).willReturn("Not a date");
 		
 		mapper.mapFieldSet(fieldSet);
 		
-		then(fieldSet).should(times(1)).readRawString("id");
+		then(fieldSet).should(times(1)).readRawString("instrumentId");
 		then(fieldSet).should(times(1)).readRawString("payload");
 		then(fieldSet).should(times(1)).readRawString("asOf");
 	}

@@ -17,7 +17,7 @@ public class PriceMapper extends BeanWrapperFieldSetMapper<Price> {
 	public Price mapFieldSet(FieldSet fieldSet) throws BindException {
 		Price price = new Price();
 
-		price.setInstrumentId(fieldSet.readRawString("id"));
+		price.setInstrumentId(fieldSet.readRawString("instrumentId"));
 		price.setPayload(fieldSet.readRawString("payload"));
 
 		final String asOf = fieldSet.readRawString("asOf");

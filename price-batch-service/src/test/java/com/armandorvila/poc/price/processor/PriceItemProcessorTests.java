@@ -29,10 +29,10 @@ public class PriceItemProcessorTests {
 
 	@Test
 	public void shouldSetBatchId() throws Exception {
-		Price price = new Price("priceId", "25.00", "instrumentId", null, LocalDateTime.now(), null);
+		Price price = new Price("priceId", "25.00", "instrumentId", BATCH_ID, LocalDateTime.now());
 		
 		itemProcessor.process(price);
-
+		
 		assertThat(price.getBatchId()).isEqualTo(BATCH_ID);
 	}
 }
