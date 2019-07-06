@@ -26,14 +26,14 @@ Once the docker compose is up, you can consume the endpoints explained in the ne
 
 The following table sums up the system endpoints, full examples based on curl can be found in the next section:
 
-| Endpoint                                        | Method | Description                                                                                                                                                       |
-| ----------------------------------------------- | ------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `/api/operations/jobs/loadPrices`               | POST   | Creates an asynchronous job execution for the loadPrices Spring Batch Job. Each will lunch a new execution, in background returning the execution id of the job.  |
-| `/api/operations/jobs/executions/{executionId}` | DELETE | Stops the job execution of the given ID.                                                                                                                          |
-| `/api/monitoring/jobs/executions/{executionId}` | GET    | Retrieves the information for a given execution ID.                                                                                                               |
-| `/api/batches`                                  | GET    | Retrieves the batch runs from the database enforcing offset/size pagination.                                                                                      |
-| `/api/prices?instrumentId={instrumentId}`       | GET    | Retrieves all the prices from the database by instrumentId, enforcing offset/size pagination.                                                                     |
-| `/api/prices/last?instrumentId={instrumentId}`  | GET    | Get the last price for the given instrumentId, if no instrumentId is provided a 400 error is returned. If the instrumentId doesn't exist a 404 error is returned. |
+| Endpoint                                        | Method | Description                                                                                                                                                             |
+| ----------------------------------------------- | ------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `/api/operations/jobs/loadPrices`               | POST   | Creates an asynchronous job execution for the loadPrices Spring Batch Job. Each request will lunch a new execution in background returning the execution id of the job. |
+| `/api/operations/jobs/executions/{executionId}` | DELETE | Stops the job execution of the given ID.                                                                                                                                |
+| `/api/monitoring/jobs/executions/{executionId}` | GET    | Retrieves the information for a given execution ID.                                                                                                                     |
+| `/api/batches`                                  | GET    | Retrieves the batch runs from the database enforcing offset/size pagination.                                                                                            |
+| `/api/prices?instrumentId={instrumentId}`       | GET    | Retrieves all the prices from the database by instrumentId, enforcing offset/size pagination.                                                                           |
+| `/api/prices/last?instrumentId={instrumentId}`  | GET    | Get the last price for the given instrumentId, if no instrumentId is provided a 400 error is returned. If the instrumentId doesn't exist a 404 error is returned.       |
 
 ## Examples
 
